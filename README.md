@@ -16,6 +16,30 @@ This pipeline extracts stock data from the Alpha Vantage API, transforms it into
 - Error notifications via SNS Email
 - Queryable with Athena (and compatible with QuickSight, Power BI)
 
+## Architecture:
+```mermaid
+graph TD
+    A(CloudWatch Schedule: 6AM) --> B(Step Function: ETL Orchestration)
+
+    subgraph B [Step Function: ETL Orchestration]
+        C(Lambda: Fetch from Alpha Vantage API)
+        D(Glue Job: Transform & Partition)
+        E(Glue Crawler: Update Catalog Schema)
+        C --> F(S3: Upload raw JSON to /raw/)
+        D --> G(S3: Write Parquet to /processed/)
+        C --> D
+        D --> E
+
+        C --> I{Fail?}
+        D --> I
+        E --> I
+        I -->|Yes| J(SNS: Email Alert)
+    end
+
+    E --> K(Athena: Query from /processed/)
+    K --> L(Dashboard: PowerBI / Tableau / QuickSight)
+```
+
 ## Step Function Flow
 
 <img width="500" alt="Screenshot 2025-07-09 at 1 33 19 PM" src="https://github.com/user-attachments/assets/a1723327-2b55-4bc3-bdc5-00b7df854ff8" />
