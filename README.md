@@ -106,7 +106,7 @@ stock_symbol         = "AAPL"
 
 All resources will be provisioned, including IAM roles, Lambda, Glue, Step Functions, and S3.
 
-## 💸 Cost Estimate
+## Cost Estimate
 
 > [!IMPORTANT]  
 > This project provisions real AWS infrastructure and may incur costs in your AWS account. You are responsible for monitoring and cleaning up resources if not in use.
