@@ -36,16 +36,17 @@ graph TD
 
 ## Tech Stack
 
-Layer	Technology
-Orchestration	AWS Step Functions
-Compute	AWS Lambda, AWS Glue
-Storage	Amazon S3
-Transformation	PySpark
-Metadata Catalog	AWS Glue Data Catalog
-Scheduling	CloudWatch Event Rule
-Alerting	Amazon SNS
-Query Layer	Amazon Athena
-Infrastructure	Terraform (modular architecture)
+| Layer               | Technology                             |
+|---------------------|-----------------------------------------|
+| Orchestration       | AWS Step Functions                      |
+| Compute             | AWS Lambda, AWS Glue                    |
+| Storage             | Amazon S3                               |
+| Transformation      | PySpark                                 |
+| Metadata Catalog    | AWS Glue Data Catalog                   |
+| Scheduling          | CloudWatch Event Rule                   |
+| Alerting            | Amazon SNS                              |
+| Query Layer         | Amazon Athena                           |
+| Infrastructure      | Terraform (modular architecture)        |
 
 
 ---
@@ -88,6 +89,19 @@ terraform init
 terraform apply
 
 All resources will be provisioned, including IAM roles, Lambda, Glue, Step Functions, and S3.
+
+## 💸 Cost Estimate
+
+> [!IMPORTANT]  
+> This project provisions real AWS infrastructure and may incur costs in your AWS account. You are responsible for monitoring and cleaning up resources if not in use.
+
+This pipeline is optimized for low-cost, daily ETL jobs.
+
+| Frequency | Approximate Cost |
+|-----------|------------------|
+| Per run   | ~$0.035 (3.5 cents) |
+| Daily     | ~$0.035/day |
+| Monthly   | ~$1.05/month (assuming 1 run per day) |
 
 ---
 
@@ -137,6 +151,21 @@ The final output table is queryable from Athena and compatible with:
 - Terraform manages all IAM resources
 - iam/ module contains granular policies per service (Lambda, Glue, Step Functions)
 
+### Required IAM Permissions
+
+To provision this project, you need an AWS IAM role or user with sufficient permissions to create the following services:
+	•	AWS Lambda
+	•	AWS Glue (jobs, crawlers, databases)
+	•	S3 (buckets, objects)
+	•	Step Functions (state machines)
+	•	CloudWatch (logs, events)
+	•	IAM (role creation and iam:PassRole)
+
+For quick setup, you can temporarily attach the AWS-managed AdministratorAccess policy:
+```arn:aws:iam::aws:policy/AdministratorAccess```
+
+> [!Note]  
+> For production use, it’s recommended to create a scoped-down IAM policy.
 ---
 
 ## Possible Enhancements
