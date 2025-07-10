@@ -1,0 +1,28 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.auto.tfvars
+secrets.auto.tfvars
+terraform.tfvars
+.terraform/
+*.tfplan
+tfplan
+.terraform/
+.terraform.lock.hcl
+.crash/
+
+# AWS credentials
+*.pem
+secrets.auto.tfvars
+.aws/
+.env
+
+# Python cache (if used)
+__pycache__/
+.venv/
+venv/
+*.pyc
+
+# OS
+.DS_Store

@@ -1,0 +1,4 @@
+stock_symbol = "AAPL"
+alphavantage_api_key = "YOUR_API_KEY_HERE"
+project = "data-pipeline"
+env = "dev"

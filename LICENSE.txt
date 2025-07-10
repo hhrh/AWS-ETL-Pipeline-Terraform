@@ -1,0 +1,8 @@
+Copyright © 2025 Hardy Fenam
+
+All Rights Reserved.
+
+This software and associated files are the exclusive property of the author.
+Unauthorized use, reproduction, modification, or distribution of any part of this codebase is strictly prohibited.
+
+This code may not be copied, reproduced, modified, published, uploaded, posted, transmitted, or distributed in any way, in whole or in part, without prior written permission from the author.
