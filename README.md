@@ -5,7 +5,6 @@ An end-to-end serverless data pipeline using AWS Lambda, AWS Glue, S3, Step Func
 This pipeline extracts stock data from the Alpha Vantage API, transforms it into a structured format using PySpark, stores it as Parquet in S3, and makes it queryable via Athena. It is orchestrated via AWS Step Functions with alerting and retry logic.
 
 ---
-
 ## Features
 - Daily Scheduled ETL Job via CloudWatch Event Rule
 - Serverless with Lambda, Glue, Step Functions
@@ -17,22 +16,13 @@ This pipeline extracts stock data from the Alpha Vantage API, transforms it into
 - Error notifications via SNS Email
 - Queryable with Athena (and compatible with QuickSight, Power BI)
 
----
+## Step Function Flow
 
-## Architecture
+<img width="500" alt="Screenshot 2025-07-09 at 1 33 19 PM" src="https://github.com/user-attachments/assets/a1723327-2b55-4bc3-bdc5-00b7df854ff8" />
 
-graph TD
-    A[CloudWatch Schedule (6AM)] --> B[Lambda Function: Alpha Vantage Fetch]
-    B -->|Put JSON to S3 /raw/| C[S3 Bucket: mycompany-data-pipeline-dev]
-    B --> D[Step Functions: ETL Orchestrator]
-    D --> E[Glue Job: Transform + Partition Data]
-    E -->|Write Parquet to /processed/| C
-    D --> F[Glue Crawler: Update Catalog Schema]
-    F --> G[Athena: External Table Querying]
-    D -->|Failure| H[SNS: Email Alert]
+If a node fails, it is caught and an SNS Notification is sent to notify of the failure:
+<img width="500" alt="Screenshot 2025-07-09 at 1 20 17 PM" src="https://github.com/user-attachments/assets/8bdc2819-86db-49f7-96e1-b1cc50872245" />
 
-
----
 
 ## Tech Stack
 
@@ -52,7 +42,7 @@ graph TD
 ---
 
 ## Terraform Module Structure
-
+```
 terraform/
   ├── modules/
   │   ├── lambda/
@@ -63,30 +53,32 @@ terraform/
   │   ├── sns/
   │   └── iam/
   └── main.tf (root)
-
+```
 ---
 
 ## Setup
 
 1. Clone this repository
 
+```bash
 git clone https://github.com/your-username/aws-etl-pipeline.git
 cd aws-etl-pipeline
+```
 
 2. Fill in Secrets
 
 Edit secrets.auto.tfvars:
-
+```
 alphavantage_api_key = "your_api_key"
 stock_symbol         = "AAPL"
-
+```
 3. Initialize Terraform
 
-terraform init
+`terraform init`
 
 4. Apply Terraform Plan
 
-terraform apply
+`terraform apply`
 
 All resources will be provisioned, including IAM roles, Lambda, Glue, Step Functions, and S3.
 
@@ -103,24 +95,23 @@ This pipeline is optimized for low-cost, daily ETL jobs.
 | Daily     | ~$0.035/day |
 | Monthly   | ~$1.05/month (assuming 1 run per day) |
 
----
 
 ## Output Data
 - Raw: s3://mycompany-data-pipeline-dev-xxxxx/raw/
 - Processed: s3://mycompany-data-pipeline-dev-xxxxx/processed/
 - Partitioned by symbol and date
 
----
-
 ## Athena Table Example
 
+```sql
 SELECT * FROM stock_data.data_pipeline_processed
 WHERE symbol = 'AAPL'
 ORDER BY timestamp DESC
 LIMIT 10;
+```
+Output:  
+<img width="1000" alt="Screenshot 2025-07-03 at 6 15 39 PM" src="https://github.com/user-attachments/assets/df1ee477-0b7c-4ef1-954d-37463b8c3795" />
 
-
----
 
 ## Error Handling
 
@@ -128,13 +119,10 @@ Each step in the pipeline (Lambda, Glue Job, Glue Crawler) is wrapped with Catch
 
 You can configure SNS to target other services like Slack, PagerDuty, or SMS.
 
----
 
 ## Schedule
 
 Runs every day at 6:00 AM (UTC/local depending on timezone) via CloudWatch Event Rule.
-
----
 
 ## Dashboarding
 
@@ -144,8 +132,6 @@ The final output table is queryable from Athena and compatible with:
 - Tableau
 - Jupyter Notebooks with PyAthena
 
----
-
 ## Security & IAM
 - Every service uses a least-privilege IAM role
 - Terraform manages all IAM resources
@@ -154,19 +140,18 @@ The final output table is queryable from Athena and compatible with:
 ### Required IAM Permissions
 
 To provision this project, you need an AWS IAM role or user with sufficient permissions to create the following services:
-	•	AWS Lambda
-	•	AWS Glue (jobs, crawlers, databases)
-	•	S3 (buckets, objects)
-	•	Step Functions (state machines)
-	•	CloudWatch (logs, events)
-	•	IAM (role creation and iam:PassRole)
+- AWS Lambda
+- AWS Glue (jobs, crawlers, databases)
+- S3 (buckets, objects)
+- Step Functions (state machines)
+- CloudWatch (logs, events)
+- IAM (role creation and iam:PassRole)
 
 For quick setup, you can temporarily attach the AWS-managed AdministratorAccess policy:
 ```arn:aws:iam::aws:policy/AdministratorAccess```
 
 > [!Note]  
 > For production use, it’s recommended to create a scoped-down IAM policy.
----
 
 ## Possible Enhancements
 - Use AWS Secrets Manager for sensitive values
@@ -174,13 +159,11 @@ For quick setup, you can temporarily attach the AWS-managed AdministratorAccess 
 - Add retry and exponential backoff logic to Lambda
 - Add QuickSight Dashboard directly in Terraform
 
----
 
 ## Author
 
-Hardy Fenam
-Cloud & Data Engineer
-LinkedIn | GitHub
+Hardy Fenam  
+Cloud & Data Engineer   
 
 ---
 
