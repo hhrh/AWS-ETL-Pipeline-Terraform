@@ -119,6 +119,10 @@ This pipeline is optimized for low-cost, daily ETL jobs.
 | Daily     | ~$0.035/day |
 | Monthly   | ~$1.05/month (assuming 1 run per day) |
 
+These costs are based off daily 5-minute candles, using one stock ticker.  
+As data scales, costs will scale as well.  
+To minimize costs, we take advantage of Sparks in-memory computations.  
+We can also take advantage of certain AWS configurations like Flex execution for Glue jobs.
 
 ## Output Data
 - Raw: s3://mycompany-data-pipeline-dev-xxxxx/raw/
